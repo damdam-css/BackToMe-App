@@ -9,6 +9,7 @@ interface BottomNavProps {
   onSelectTab: (tab: NavTab) => void;
   currentUserRole: UserRole;
   pendingClaimsCount?: number;
+  forceMobileView?: boolean;
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
@@ -16,11 +17,12 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onSelectTab,
   currentUserRole,
   pendingClaimsCount = 0,
+  forceMobileView = false,
 }) => {
   const isSecurityOrAdmin = currentUserRole === 'satpam' || currentUserRole === 'admin';
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#CBD5E1] md:hidden shadow-lg pb-[env(safe-area-inset-bottom,0px)]">
+    <div className={`${forceMobileView ? 'sticky bottom-0 block' : 'fixed bottom-0 md:hidden'} left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#CBD5E1] shadow-lg pb-[env(safe-area-inset-bottom,0px)]`}>
       <div className="grid grid-cols-5 items-center h-16 max-w-md mx-auto px-1">
         {/* Tab 1: Beranda */}
         <button

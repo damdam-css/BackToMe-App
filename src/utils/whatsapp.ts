@@ -58,5 +58,10 @@ export function getWhatsAppUrl(phone?: string, messageText?: string): string {
 
 export function openWhatsAppRedirect(phone?: string, messageText?: string) {
   const url = getWhatsAppUrl(phone, messageText);
-  window.open(url, '_blank', 'noopener,noreferrer');
+  try {
+    const win = window.open(url, '_blank', 'noopener,noreferrer');
+    if (win) win.focus();
+  } catch {
+    // Avoid unhandled errors if popups/window.open are blocked in sandbox
+  }
 }

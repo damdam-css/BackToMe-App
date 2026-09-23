@@ -7,9 +7,12 @@ import {
   LogOut,
   ChevronRight,
   HelpCircle,
-  ShieldCheck
+  ShieldCheck,
+  Database,
+  CheckCircle2
 } from 'lucide-react';
 import { Profile, Item, Claim } from '../types';
+import { getSupabaseConfig } from '../services/supabase';
 
 interface ProfileViewProps {
   currentUser: Profile;
@@ -30,6 +33,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onViewMyClaims,
   onOpenWelcome,
 }) => {
+  const supabaseConfig = getSupabaseConfig();
   const reportedByMe = items.filter((i) => i.reporter_id === currentUser.id);
   const claimedByMe = claims.filter((c) => c.claimant_id === currentUser.id);
   const successfullyReturned = claims.filter(
@@ -161,6 +165,26 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             <ChevronRight className="w-4 h-4 text-slate-400" />
           </button>
         )}
+
+        {/* Supabase Cloud Connection Status */}
+        <div className="p-4 flex items-center justify-between bg-slate-50/70 text-left">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center">
+              <Database className="w-4.5 h-4.5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-extrabold text-slate-900 block">Supabase Backend</span>
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-full">
+                  <CheckCircle2 className="w-2.5 h-2.5" /> Terhubung
+                </span>
+              </div>
+              <span className="text-[10px] text-slate-500 font-medium block truncate max-w-[220px] sm:max-w-xs">
+                {supabaseConfig.url ? 'eerdjbxjtifcxuyqdpsm.supabase.co' : 'Mode offline aktif'}
+              </span>
+            </div>
+          </div>
+        </div>
 
         {/* Keluar (danger) per Section 7h */}
         <button

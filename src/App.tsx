@@ -39,6 +39,9 @@ import { ASSET_IMAGES } from './data/mockData';
 import { WelcomeAuthPage, WelcomeAuthViewMode } from './components/WelcomeAuthPage';
 import { ItemGridSkeleton } from './components/SkeletonLoader';
 import { getSupabase } from './services/supabase';
+import { MobileFrameWrapper } from './components/MobileFrameWrapper';
+import { PWAInstallButton } from './components/PWAInstallButton';
+import { OfflineIndicator } from './components/OfflineIndicator';
 
 const ALL_CATEGORIES: ('Semua' | ItemCategory)[] = [
   'Semua',
@@ -51,6 +54,26 @@ const ALL_CATEGORIES: ('Semua' | ItemCategory)[] = [
 ];
 
 export default function App() {
+  // Mobile Frame Simulation state for desktop preview
+  const [isMobileFrame, setIsMobileFrame] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('backtome_mobile_frame');
+      if (saved !== null) return saved === 'true';
+      return window.innerWidth >= 1024;
+    }
+    return false;
+  });
+
+  const handleToggleMobileFrame = () => {
+    setIsMobileFrame((prev) => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('backtome_mobile_frame', String(next));
+      }
+      return next;
+    });
+  };
+
   // App state
   const [currentUser, setCurrentUser] = useState<Profile>(() => store.getCurrentUser());
   const [items, setItems] = useState<Item[]>(() => store.getItems());
@@ -326,33 +349,39 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] flex flex-col antialiased selection:bg-[#FFC570] selection:text-[#1A3263]">
-      {/* Top App Bar Header (Section 6 & 7b) */}
-      <Header
-        currentUser={currentUser}
-        searchQuery={searchQuery}
-        onSearchChange={(q) => {
-          setSearchQuery(q);
-          if (q && activeTab === 'home') {
-            setActiveTab('catalog');
-          }
-        }}
-        unreadCount={pendingClaimsCount}
-        onOpenNotifications={() => setIsNotificationOpen(true)}
-        onOpenWelcome={() => setWelcomeMode('welcome')}
-        onOpenAuth={(mode = 'login') => setWelcomeMode(mode)}
-        isLoggedIn={isLoggedIn}
-        activeTab={activeTab}
-        onSelectTab={(tab) => setActiveTab(tab)}
-        onOpenReport={() => {
-          if (!isLoggedIn) {
-            showToast('warning', 'Silakan masuk atau daftar terlebih dahulu untuk melaporkan barang.');
-            setWelcomeMode('login');
-            return;
-          }
-          setIsReportOpen(true);
-        }}
-      />
+    <MobileFrameWrapper
+      isMobileFrame={isMobileFrame}
+      onToggleMobileFrame={handleToggleMobileFrame}
+    >
+      <div className="min-h-full bg-[#F8FAFC] text-[#0F172A] flex flex-col antialiased selection:bg-[#FFC570] selection:text-[#1A3263]">
+        {/* Top App Bar Header (Section 6 & 7b) */}
+        <Header
+          currentUser={currentUser}
+          searchQuery={searchQuery}
+          onSearchChange={(q) => {
+            setSearchQuery(q);
+            if (q && activeTab === 'home') {
+              setActiveTab('catalog');
+            }
+          }}
+          unreadCount={pendingClaimsCount}
+          onOpenNotifications={() => setIsNotificationOpen(true)}
+          onOpenWelcome={() => setWelcomeMode('welcome')}
+          onOpenAuth={(mode = 'login') => setWelcomeMode(mode)}
+          isLoggedIn={isLoggedIn}
+          activeTab={activeTab}
+          onSelectTab={(tab) => setActiveTab(tab)}
+          onOpenReport={() => {
+            if (!isLoggedIn) {
+              showToast('warning', 'Silakan masuk atau daftar terlebih dahulu untuk melaporkan barang.');
+              setWelcomeMode('login');
+              return;
+            }
+            setIsReportOpen(true);
+          }}
+          isMobileFrame={isMobileFrame}
+          onToggleMobileFrame={handleToggleMobileFrame}
+        />
 
       {/* Main Container: Max-width 1200px, 16px mobile, 24px tablet, 32px desktop per Section 2 */}
       <main className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
@@ -468,6 +497,11 @@ export default function App() {
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* PWA Mobile App Install Banner */}
+            {activeTab === 'home' && searchQuery === '' && (
+              <PWAInstallButton variant="banner" />
             )}
 
             {/* Quick Menu (4 Column Shortcut per Section 4.2) */}
@@ -619,56 +653,58 @@ export default function App() {
       </main>
 
       {/* Desktop / Tablet Quick Nav Helper Bar */}
-      <div className="hidden md:block fixed bottom-4 right-6 z-30">
-        <div className="bg-slate-900 text-white p-2 rounded-full shadow-2xl border border-slate-800 flex items-center gap-2">
-          <button
-            onClick={() => setActiveTab('home')}
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
-              activeTab === 'home' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white'
-            }`}
-          >
-            Beranda
-          </button>
-          <button
-            onClick={() => setActiveTab('catalog')}
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
-              activeTab === 'catalog' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white'
-            }`}
-          >
-            Katalog
-          </button>
-          <button
-            onClick={() => {
-              if (!isLoggedIn) {
-                showToast('warning', 'Silakan masuk atau daftar terlebih dahulu untuk melaporkan barang.');
-                setWelcomeMode('login');
-                return;
-              }
-              setIsReportOpen(true);
-            }}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full text-xs flex items-center gap-1.5 shadow-sm transition-colors"
-          >
-            <PlusCircle className="w-3.5 h-3.5" />
-            Lapor Temuan
-          </button>
-          <button
-            onClick={() => setActiveTab('claims')}
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
-              activeTab === 'claims' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white'
-            }`}
-          >
-            Klaim ({claims.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('admin')}
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
-              activeTab === 'admin' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white'
-            }`}
-          >
-            Pos Satpam
-          </button>
+      {!isMobileFrame && (
+        <div className="hidden md:block fixed bottom-4 right-6 z-30">
+          <div className="bg-slate-900 text-white p-2 rounded-full shadow-2xl border border-slate-800 flex items-center gap-2">
+            <button
+              onClick={() => setActiveTab('home')}
+              className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
+                activeTab === 'home' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              Beranda
+            </button>
+            <button
+              onClick={() => setActiveTab('catalog')}
+              className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
+                activeTab === 'catalog' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              Katalog
+            </button>
+            <button
+              onClick={() => {
+                if (!isLoggedIn) {
+                  showToast('warning', 'Silakan masuk atau daftar terlebih dahulu untuk melaporkan barang.');
+                  setWelcomeMode('login');
+                  return;
+                }
+                setIsReportOpen(true);
+              }}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full text-xs flex items-center gap-1.5 shadow-sm transition-colors"
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              Lapor Temuan
+            </button>
+            <button
+              onClick={() => setActiveTab('claims')}
+              className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
+                activeTab === 'claims' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              Klaim ({claims.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('admin')}
+              className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
+                activeTab === 'admin' ? 'bg-blue-600 text-white' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              Pos Satpam
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Mobile Fixed Bottom Navigation Bar (Section 6 & 7b) */}
       <BottomNav
@@ -687,7 +723,11 @@ export default function App() {
         }}
         currentUserRole={currentUser.role}
         pendingClaimsCount={pendingClaimsCount}
+        forceMobileView={isMobileFrame}
       />
+
+      {/* Offline Status Indicator */}
+      <OfflineIndicator />
 
       {/* Floating Toast / Snackbar per Section 6 */}
       <Toast toast={toast} onDismiss={() => setToast(null)} />
@@ -775,6 +815,7 @@ export default function App() {
         items={items}
         onOpenChat={handleOpenChat}
       />
-    </div>
+      </div>
+    </MobileFrameWrapper>
   );
 }

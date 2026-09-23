@@ -28,6 +28,7 @@ import { Profile, UserRole } from '../types';
 import { store } from '../services/store';
 import { MOCK_USERS } from '../data/mockData';
 import { getSupabase } from '../services/supabase';
+import { PWAInstallButton } from './PWAInstallButton';
 
 export type WelcomeAuthViewMode = 'welcome' | 'login' | 'register';
 
@@ -161,8 +162,9 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
         setRegError(error.message);
         return;
       }
-      alert('Registrasi sukses! Silakan periksa email masuk di Gmail Anda untuk memverifikasi akun Anda di Supabase.');
+      setLoginEmail(regEmail.trim());
       setMode('login');
+      setLoginError('Registrasi berhasil! Silakan periksa email masuk di Gmail Anda untuk memverifikasi akun Anda, lalu masuk.');
       return;
     }
 
@@ -185,7 +187,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
   const handleVerifyOTP = (e: React.FormEvent) => {
     e.preventDefault();
     if (verificationCodeInput !== generatedCode) {
-      alert('Kode OTP yang Anda masukkan salah. Silakan coba lagi.');
+      setLoginError('Kode OTP yang Anda masukkan salah. Silakan coba lagi.');
       return;
     }
 
@@ -208,7 +210,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
         }
       });
       if (error) {
-        alert(error.message);
+        setLoginError(error.message);
       }
     } else {
       const mockGUser: Profile = {
@@ -223,6 +225,32 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
       store.setCurrentUser(mockGUser);
       onLoginSuccess(mockGUser);
     }
+  };
+
+  const handleQuickLogin = (quickRole: 'siswa' | 'satpam') => {
+    const demoUser: Profile = quickRole === 'siswa' ? {
+      id: 'user-siswa-1',
+      full_name: 'Damar Areefa Naraya',
+      role: 'siswa',
+      email: 'damarareefanaraya@gmail.com',
+      phone: '0812-3456-7890',
+      institution: 'SMKN 24 Jakarta',
+      avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+      created_at: new Date().toISOString()
+    } : {
+      id: 'user-satpam-1',
+      full_name: 'Pak Joko (Satpam)',
+      role: 'satpam',
+      email: 'pakjoko.satpam@smkn24jakarta.sch.id',
+      phone: '0819-8765-4321',
+      institution: 'SMKN 24 Jakarta',
+      avatar_url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80',
+      created_at: new Date().toISOString()
+    };
+
+    store.registerNewUser(demoUser);
+    store.setCurrentUser(demoUser);
+    onLoginSuccess(demoUser);
   };
 
   return (
@@ -363,14 +391,15 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                     </p>
                   </div>
 
-                  {/* "Let's start" Pill Button */}
-                  <div className="mt-5">
+                  {/* "Let's start" Pill Button & PWA Mobile Install */}
+                  <div className="mt-5 space-y-2">
                     <button
                       onClick={() => setMode('login')}
                       className="w-full h-11 bg-[#1E3E8F] hover:bg-blue-900 text-white font-bold text-xs rounded-full shadow-sm transition-all active:scale-[0.98]"
                     >
                       Let's start
                     </button>
+                    <PWAInstallButton variant="pill" className="w-full justify-center py-2.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200" />
                   </div>
                 </div>
 
@@ -566,6 +595,31 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                         Masuk Sekarang
                       </button>
                     </form>
+
+                    {/* Quick Demo Login Widget */}
+                    <div className="mt-3.5 pt-3 pb-1 px-1 bg-blue-50/50 rounded-2xl border border-blue-100/50 space-y-2">
+                      <span className="block text-[9px] font-extrabold uppercase tracking-wider text-blue-800 text-center">
+                        ⚡ MASUK CEPAT AKUN DEMO
+                      </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleQuickLogin('siswa')}
+                          className="h-10 bg-white hover:bg-slate-50 text-slate-800 text-[10px] font-bold rounded-xl border border-slate-200 transition-all flex flex-col items-center justify-center shadow-3xs"
+                        >
+                          <span className="text-[#1E3E8F]">Siswa (Damar)</span>
+                          <span className="text-[8px] text-slate-400 font-medium">Bisa lapor & klaim</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleQuickLogin('satpam')}
+                          className="h-10 bg-white hover:bg-slate-50 text-slate-800 text-[10px] font-bold rounded-xl border border-slate-200 transition-all flex flex-col items-center justify-center shadow-3xs"
+                        >
+                          <span className="text-amber-700">Satpam (Pak Joko)</span>
+                          <span className="text-[8px] text-slate-400 font-medium">Bisa verifikasi klaim</span>
+                        </button>
+                      </div>
+                    </div>
 
                     {/* Google Login with clean white frame */}
                     <div className="mt-2">

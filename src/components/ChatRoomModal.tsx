@@ -13,7 +13,8 @@ import {
   AlertTriangle,
   User,
   Clock,
-  Sparkles
+  Sparkles,
+  AlertCircle
 } from 'lucide-react';
 import { Claim, Item, Profile } from '../types';
 import { store } from '../services/store';
@@ -57,6 +58,7 @@ export const ChatRoomModal: React.FC<ChatRoomModalProps> = ({
   const [rejectReasonPrompt, setRejectReasonPrompt] = useState(false);
   const [rejectNote, setRejectNote] = useState('');
   const [actionSuccessNotice, setActionSuccessNotice] = useState<string | null>(null);
+  const [actionErrorNotice, setActionErrorNotice] = useState<string | null>(null);
 
   const isSatpamOrAdmin = currentUser.role === 'satpam' || currentUser.role === 'admin';
 
@@ -80,6 +82,7 @@ export const ChatRoomModal: React.FC<ChatRoomModalProps> = ({
   const handleApproveClaim = () => {
     if (!claim) return;
     setIsVerifying(true);
+    setActionErrorNotice(null);
     try {
       const { claim: updatedClaim, item: updatedItem } = store.verifyClaimDecision(
         claim.id,
@@ -91,7 +94,7 @@ export const ChatRoomModal: React.FC<ChatRoomModalProps> = ({
       if (onClaimUpdated) onClaimUpdated(updatedClaim, updatedItem);
     } catch (err: any) {
       setIsVerifying(false);
-      alert(err.message || 'Gagal menyetujui klaim');
+      setActionErrorNotice(err.message || 'Gagal menyetujui klaim');
     }
   };
 
@@ -99,10 +102,11 @@ export const ChatRoomModal: React.FC<ChatRoomModalProps> = ({
   const handleRejectClaim = () => {
     if (!claim) return;
     if (!rejectNote.trim()) {
-      alert('Harap isi alasan penolakan klaim');
+      setActionErrorNotice('Harap isi alasan penolakan klaim');
       return;
     }
     setIsVerifying(true);
+    setActionErrorNotice(null);
     try {
       const { claim: updatedClaim, item: updatedItem } = store.verifyClaimDecision(
         claim.id,
@@ -115,7 +119,7 @@ export const ChatRoomModal: React.FC<ChatRoomModalProps> = ({
       if (onClaimUpdated) onClaimUpdated(updatedClaim, updatedItem);
     } catch (err: any) {
       setIsVerifying(false);
-      alert(err.message || 'Gagal menolak klaim');
+      setActionErrorNotice(err.message || 'Gagal menolak klaim');
     }
   };
 
@@ -165,6 +169,21 @@ export const ChatRoomModal: React.FC<ChatRoomModalProps> = ({
               <button 
                 onClick={() => setActionSuccessNotice(null)}
                 className="text-emerald-700 hover:text-emerald-950 text-xs font-bold underline"
+              >
+                Tutup
+              </button>
+            </div>
+          )}
+
+          {actionErrorNotice && (
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-2xl text-rose-900 text-xs flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span className="font-bold">{actionErrorNotice}</span>
+              </div>
+              <button 
+                onClick={() => setActionErrorNotice(null)}
+                className="text-rose-700 hover:text-rose-950 text-xs font-bold underline"
               >
                 Tutup
               </button>
