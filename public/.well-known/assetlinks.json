@@ -5,9 +5,9 @@
     ],
     "target": {
       "namespace": "android_app",
-      "package_name": "GANTI_DENGAN_NAMA_PAKET_APK_ANDA (Contoh: com.backtome.app)",
+      "package_name": "com.onrender.backtome_app.twa",
       "sha256_cert_fingerprints": [
-        "GANTI_DENGAN_SHA256_FINGERPRINT_DARI_PWABUILDER (Contoh: AA:BB:CC:DD:EE:FF:...)"
+        "E4:B9:FC:10:BD:42:85:04:D8:C7:10:38:8A:9D:B8:15:29:D7:16:35:9B:BE:35:CF:1A:6C:52:AE:54:53:DC:F7"
       ]
     }
   }
