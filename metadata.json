@@ -1,0 +1,6 @@
+{
+  "name": "BackToMe - Lost & Found SMKN 24 Jakarta",
+  "description": "Platform terpusat pelaporan dan pencarian barang hilang temuan di lingkungan SMKN 24 Jakarta dengan sistem verifikasi klaim berbasis bukti dan chat real-time.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
