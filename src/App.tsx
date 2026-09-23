@@ -40,7 +40,6 @@ import { WelcomeAuthPage, WelcomeAuthViewMode } from './components/WelcomeAuthPa
 import { ItemGridSkeleton } from './components/SkeletonLoader';
 import { getSupabase } from './services/supabase';
 import { MobileFrameWrapper } from './components/MobileFrameWrapper';
-import { PWAInstallButton } from './components/PWAInstallButton';
 import { OfflineIndicator } from './components/OfflineIndicator';
 
 const ALL_CATEGORIES: ('Semua' | ItemCategory)[] = [
@@ -96,6 +95,7 @@ export default function App() {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState<Item | null>(null);
   const [isClaimOpen, setIsClaimOpen] = useState(false);
   const [activeClaimForChat, setActiveClaimForChat] = useState<{ claim: Claim | null; item: Item } | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -263,11 +263,30 @@ export default function App() {
     setIsChatOpen(true);
   };
 
-  // Callback when a new report is created
+  // Callback when a new report is created or edited
   const handleReportSuccess = (newItem: Item) => {
     refreshState();
-    showToast('success', `Laporan "${newItem.title}" berhasil dipublikasikan!`);
+    if (itemToEdit) {
+      showToast('success', `Laporan "${newItem.title}" berhasil diperbarui!`);
+    } else {
+      showToast('success', `Laporan "${newItem.title}" berhasil dipublikasikan!`);
+    }
     handleSelectItem(newItem);
+    setItemToEdit(null);
+  };
+
+  const handleEditItem = (item: Item) => {
+    setIsDetailOpen(false);
+    setItemToEdit(item);
+    setIsReportOpen(true);
+  };
+
+  const handleDeleteItem = (item: Item) => {
+    store.deleteItem(item.id);
+    refreshState();
+    setIsDetailOpen(false);
+    setSelectedItem(null);
+    showToast('success', `Laporan "${item.title}" berhasil dihapus.`);
   };
 
   // Extract unique locations for filtering
@@ -405,6 +424,7 @@ export default function App() {
             onOpenChat={handleOpenChat}
             onSelectItem={handleSelectItem}
             isLoading={isLoading || isFiltering}
+            onDeleteItem={handleDeleteItem}
           />
         ) : activeTab === 'profile' ? (
           <ProfileView
@@ -428,6 +448,11 @@ export default function App() {
               setActiveTab('catalog');
             }}
             onViewMyClaims={() => setActiveTab('claims')}
+            onUpdateProfile={(updatedUser) => {
+              store.setCurrentUser(updatedUser);
+              setCurrentUser(updatedUser);
+              showToast('success', 'Profil Anda berhasil diperbarui!');
+            }}
           />
         ) : (
           /* Dashboard & Katalog Views */
@@ -466,7 +491,7 @@ export default function App() {
                     <div className="pt-2 flex flex-wrap items-center gap-3">
                       <button
                         onClick={() => setIsReportOpen(true)}
-                        className="h-11 px-5 bg-white hover:bg-slate-50 text-blue-600 font-bold rounded-full text-xs sm:text-sm shadow-sm transition-all active:scale-[0.98] flex items-center gap-2"
+                        className="h-11 px-5 bg-white hover:bg-slate-50 text-blue-600 font-bold rounded-full text-xs sm:text-sm shadow-sm transition-all active:scale-[0.98] flex items-center gap-2 animate-bounce-slow"
                       >
                         <PlusCircle className="w-4 h-4 fill-current text-white stroke-blue-600" />
                         Lapor Barang
@@ -499,10 +524,7 @@ export default function App() {
               </div>
             )}
 
-            {/* PWA Mobile App Install Banner */}
-            {activeTab === 'home' && searchQuery === '' && (
-              <PWAInstallButton variant="banner" />
-            )}
+
 
             {/* Quick Menu (4 Column Shortcut per Section 4.2) */}
             {activeTab === 'home' && searchQuery === '' && (
@@ -770,13 +792,19 @@ export default function App() {
           (c) => c.item_id === selectedItem?.id && c.claimant_id === currentUser.id
         )}
         allClaimsForItem={claims.filter((c) => c.item_id === selectedItem?.id)}
+        onEditItem={handleEditItem}
+        onDeleteItem={handleDeleteItem}
       />
 
       {/* 2. Report Form 2-Step Modal / Bottom Sheet */}
       <ReportModal
         isOpen={isReportOpen}
-        onClose={() => setIsReportOpen(false)}
+        onClose={() => {
+          setIsReportOpen(false);
+          setItemToEdit(null);
+        }}
         onSuccess={handleReportSuccess}
+        itemToEdit={itemToEdit}
       />
 
       {/* 3. Claim Form Modal / Bottom Sheet */}

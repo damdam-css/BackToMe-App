@@ -17,7 +17,7 @@ export default defineConfig(() => {
           name: 'BackToMe - Lost & Found SMKN 24',
           short_name: 'BackToMe',
           description: 'Aplikasi pelaporan dan pencarian barang hilang temuan di SMKN 24 Jakarta.',
-          theme_color: '#2563eb',
+          theme_color: '#1E3E8F',
           background_color: '#f8fafc',
           display: 'standalone',
           orientation: 'portrait',

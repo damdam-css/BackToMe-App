@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { Profile } from '../types';
 import { NavTab } from './BottomNav';
-import { PWAInstallButton } from './PWAInstallButton';
 
 interface HeaderProps {
   currentUser: Profile;
@@ -136,9 +135,6 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
           )}
-
-          {/* In-App PWA Install Trigger */}
-          <PWAInstallButton variant="compact" />
 
           {isLoggedIn ? (
             <>

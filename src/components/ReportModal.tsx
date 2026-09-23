@@ -21,6 +21,7 @@ interface ReportModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (item: Item) => void;
+  itemToEdit?: Item | null;
 }
 
 const CATEGORIES: ItemCategory[] = [
@@ -32,7 +33,7 @@ const CATEGORIES: ItemCategory[] = [
   'Lainnya',
 ];
 
-export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSuccess }) => {
+export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSuccess, itemToEdit = null }) => {
   // 2-Step wizard per Section 7d
   const [step, setStep] = useState<1 | 2>(1);
   const [title, setTitle] = useState('');
@@ -50,6 +51,39 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSuc
   const [customErrorField, setCustomErrorField] = useState<'title' | 'photo' | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync / Reset on Open or itemToEdit change
+  React.useEffect(() => {
+    if (isOpen) {
+      if (itemToEdit) {
+        setStep(2);
+        setTitle(itemToEdit.title);
+        setCategory(itemToEdit.category);
+        setDescription(itemToEdit.description);
+        setLocationFound(itemToEdit.location_found);
+        try {
+          setDateFound(new Date(itemToEdit.date_found).toISOString().slice(0, 16));
+        } catch {
+          setDateFound(new Date().toISOString().slice(0, 16));
+        }
+        setStorageLocation(itemToEdit.storage_location);
+        setReporterPhone(itemToEdit.reporter_phone || '0812-3456-7890');
+        setPhotoUrl(itemToEdit.photo_url);
+        setPhotoFileName('foto_sebelumnya.jpg');
+      } else {
+        setStep(1);
+        setTitle('');
+        setCategory('Elektronik');
+        setDescription('');
+        setLocationFound('');
+        setDateFound(new Date().toISOString().slice(0, 16));
+        setStorageLocation('Pos Satpam SMKN 24 Jakarta');
+        setReporterPhone(store.getCurrentUser().phone || '0812-3456-7890');
+        setPhotoUrl('');
+        setPhotoFileName('');
+      }
+    }
+  }, [isOpen, itemToEdit]);
 
   if (!isOpen) return null;
 
@@ -148,20 +182,34 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSuc
     setIsSubmitting(true);
 
     try {
-      const newItem = store.createItem({
-        title: title.trim(),
-        category,
-        description: description.trim() || 'Tidak ada deskripsi tambahan.',
-        photo_url: photoUrl,
-        location_found: locationFound.trim(),
-        date_found: new Date(dateFound).toISOString(),
-        storage_location: storageLocation.trim() || 'Pos Satpam Gedung Utama',
-        reporter_phone: reporterPhone.trim() || '0812-3456-7890',
-        status: 'belum_diklaim',
-      });
+      let savedItem: Item;
+      if (itemToEdit) {
+        savedItem = store.updateItem(itemToEdit.id, {
+          title: title.trim(),
+          category,
+          description: description.trim() || 'Tidak ada deskripsi tambahan.',
+          photo_url: photoUrl,
+          location_found: locationFound.trim(),
+          date_found: new Date(dateFound).toISOString(),
+          storage_location: storageLocation.trim() || 'Pos Satpam Gedung Utama',
+          reporter_phone: reporterPhone.trim() || '0812-3456-7890',
+        });
+      } else {
+        savedItem = store.createItem({
+          title: title.trim(),
+          category,
+          description: description.trim() || 'Tidak ada deskripsi tambahan.',
+          photo_url: photoUrl,
+          location_found: locationFound.trim(),
+          date_found: new Date(dateFound).toISOString(),
+          storage_location: storageLocation.trim() || 'Pos Satpam Gedung Utama',
+          reporter_phone: reporterPhone.trim() || '0812-3456-7890',
+          status: 'belum_diklaim',
+        });
+      }
 
       setIsSubmitting(false);
-      onSuccess(newItem);
+      onSuccess(savedItem);
       onClose();
     } catch (err: any) {
       setIsSubmitting(false);
@@ -181,8 +229,14 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSuc
         {/* Modal Header */}
         <div className="bg-slate-900 text-white px-5 py-4 flex items-center justify-between shrink-0">
           <div>
-            <h2 className="text-sm sm:text-base font-bold tracking-tight">Laporkan Barang Temuan</h2>
-            <p className="text-[11px] text-slate-400">Langkah {step} dari 2 — {step === 1 ? 'Unggah Foto' : 'Rincian & Lokasi'}</p>
+            <h2 className="text-sm sm:text-base font-bold tracking-tight">
+              {itemToEdit ? 'Edit Laporan Barang Temuan' : 'Laporkan Barang Temuan'}
+            </h2>
+            <p className="text-[11px] text-slate-400">
+              {itemToEdit 
+                ? 'Perbarui rincian dan lokasi penyimpanan barang' 
+                : `Langkah ${step} dari 2 — ${step === 1 ? 'Unggah Foto' : 'Rincian & Lokasi'}`}
+            </p>
           </div>
           <button
             onClick={onClose}
@@ -194,33 +248,35 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSuc
         </div>
 
         {/* Progress Indicator 2 Titik per Section 7d */}
-        <div className="bg-slate-50 px-6 py-3 border-b border-slate-200">
-          <div className="flex items-center justify-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${
-                step >= 1 ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-200 text-slate-500'
-              }`}>
-                {step > 1 ? <Check className="w-3 h-3 stroke-[3]" /> : '1'}
+        {!itemToEdit && (
+          <div className="bg-slate-50 px-6 py-3 border-b border-slate-200">
+            <div className="flex items-center justify-center gap-3">
+              <div className="flex items-center gap-2">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${
+                  step >= 1 ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-200 text-slate-500'
+                }`}>
+                  {step > 1 ? <Check className="w-3 h-3 stroke-[3]" /> : '1'}
+                </div>
+                <span className={`text-xs ${step === 1 ? 'font-bold text-slate-900' : 'text-slate-500'}`}>
+                  Foto Barang
+                </span>
               </div>
-              <span className={`text-xs ${step === 1 ? 'font-bold text-slate-900' : 'text-slate-500'}`}>
-                Foto Barang
-              </span>
-            </div>
 
-            <div className={`w-8 h-0.5 transition-colors ${step >= 2 ? 'bg-blue-600' : 'bg-slate-200'}`} />
+              <div className={`w-8 h-0.5 transition-colors ${step >= 2 ? 'bg-blue-600' : 'bg-slate-200'}`} />
 
-            <div className="flex items-center gap-2">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${
-                step === 2 ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-200 text-slate-500'
-              }`}>
-                2
+              <div className="flex items-center gap-2">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${
+                  step === 2 ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-200 text-slate-500'
+                }`}>
+                  2
+                </div>
+                <span className={`text-xs ${step === 2 ? 'font-bold text-slate-900' : 'text-slate-500'}`}>
+                  Detail & Lokasi
+                </span>
               </div>
-              <span className={`text-xs ${step === 2 ? 'font-bold text-slate-900' : 'text-slate-500'}`}>
-                Detail & Lokasi
-              </span>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Modal Body */}
         <div className="p-5 overflow-y-auto flex-1 space-y-4">
@@ -234,37 +290,6 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSuc
               </div>
             </div>
           )}
-
-          {/* Quick Preset Buttons for Testing */}
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-              <span>Contoh Pengisian Uji Cepat:</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              <button
-                type="button"
-                onClick={() => applyPreset('kamera')}
-                className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-full text-[11px] font-semibold text-slate-700 transition-all"
-              >
-                Kamera Sony
-              </button>
-              <button
-                type="button"
-                onClick={() => applyPreset('kunci')}
-                className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-full text-[11px] font-semibold text-slate-700 transition-all"
-              >
-                Kunci Motor
-              </button>
-              <button
-                type="button"
-                onClick={() => applyPreset('dompet')}
-                className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-full text-[11px] font-semibold text-slate-700 transition-all"
-              >
-                Dompet Kartu
-              </button>
-            </div>
-          </div>
 
           {/* STEP 1: Upload Foto (Section 7d) */}
           {step === 1 && (
@@ -508,7 +533,11 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSuc
               onClick={handleSubmit}
               className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] transition-all disabled:opacity-50"
             >
-              {isSubmitting ? 'Memproses...' : 'Kirim Laporan Temuan'}
+              {isSubmitting 
+                ? 'Memproses...' 
+                : itemToEdit 
+                ? 'Simpan Perubahan Laporan' 
+                : 'Kirim Laporan Temuan'}
               <Check className="w-4 h-4 stroke-[2.5]" />
             </button>
           )}

@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "GANTI_DENGAN_NAMA_PAKET_APK_ANDA (Contoh: com.backtome.app)",
+      "sha256_cert_fingerprints": [
+        "GANTI_DENGAN_SHA256_FINGERPRINT_DARI_PWABUILDER (Contoh: AA:BB:CC:DD:EE:FF:...)"
+      ]
+    }
+  }
+]

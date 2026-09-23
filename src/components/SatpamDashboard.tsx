@@ -22,6 +22,7 @@ interface SatpamDashboardProps {
   onOpenChat: (claim: Claim, item: Item) => void;
   onSelectItem: (item: Item) => void;
   isLoading?: boolean;
+  onDeleteItem?: (item: Item) => void;
 }
 
 export const SatpamDashboard: React.FC<SatpamDashboardProps> = ({
@@ -31,6 +32,7 @@ export const SatpamDashboard: React.FC<SatpamDashboardProps> = ({
   onOpenChat,
   onSelectItem,
   isLoading = false,
+  onDeleteItem,
 }) => {
   if (isLoading) {
     return <SatpamDashboardSkeleton />;
@@ -96,23 +98,98 @@ export const SatpamDashboard: React.FC<SatpamDashboardProps> = ({
           </div>
         </div>
 
-        {/* 4 Stat Counters */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-3 border-t border-slate-800">
-          <div className="bg-slate-800/80 p-2.5 rounded-2xl border border-slate-700">
-            <span className="text-[10px] text-slate-400">Total Temuan</span>
-            <p className="text-lg font-bold text-white mt-0.5">{totalItems}</p>
+        {/* Visual Statistik Grafik Breakdown Klaim */}
+        <div className="mt-5 pt-4 border-t border-slate-800">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              Grafik Status Klaim Pemilik
+            </span>
+            <span className="text-[10px] text-slate-400 font-semibold">
+              Total {claims.length} Klaim Diajukan · {totalItems} Barang Temuan
+            </span>
           </div>
-          <div className="bg-blue-950/40 p-2.5 rounded-2xl border border-blue-900/50">
-            <span className="text-[10px] text-blue-400">Menunggu</span>
-            <p className="text-lg font-bold text-blue-400 mt-0.5">{pendingClaims.length}</p>
+
+          {/* Stacked Percentage Progress Bar Chart */}
+          <div className="w-full h-3.5 bg-slate-800 rounded-full overflow-hidden flex mb-4 border border-slate-700 shadow-inner">
+            {claims.length === 0 ? (
+              <div className="w-full bg-slate-700 text-[9px] text-slate-400 flex items-center justify-center font-bold">
+                Belum ada pengajuan klaim aktif
+              </div>
+            ) : (
+              <>
+                {pendingClaims.length > 0 && (
+                  <div 
+                    style={{ width: `${(pendingClaims.length / claims.length) * 100}%` }} 
+                    className="bg-blue-500 h-full relative group transition-all duration-500 hover:opacity-90 animate-pulse"
+                    title={`Menunggu: ${pendingClaims.length}`}
+                  />
+                )}
+                {validClaims.length > 0 && (
+                  <div 
+                    style={{ width: `${(validClaims.length / claims.length) * 100}%` }} 
+                    className="bg-emerald-500 h-full relative group transition-all duration-500 hover:opacity-90"
+                    title={`Disetujui: ${validClaims.length}`}
+                  />
+                )}
+                {rejectedClaims.length > 0 && (
+                  <div 
+                    style={{ width: `${(rejectedClaims.length / claims.length) * 100}%` }} 
+                    className="bg-rose-500 h-full relative group transition-all duration-500 hover:opacity-90"
+                    title={`Ditolak: ${rejectedClaims.length}`}
+                  />
+                )}
+              </>
+            )}
           </div>
-          <div className="bg-emerald-950/40 p-2.5 rounded-2xl border border-emerald-900/50">
-            <span className="text-[10px] text-emerald-400">Disetujui</span>
-            <p className="text-lg font-bold text-emerald-400 mt-0.5">{validClaims.length}</p>
-          </div>
-          <div className="bg-rose-950/40 p-2.5 rounded-xl border border-rose-800/50">
-            <span className="text-[10px] text-rose-300">Ditolak</span>
-            <p className="text-lg font-bold text-rose-400 mt-0.5">{rejectedClaims.length}</p>
+
+          {/* Interactive Legend Counters with matching theme colors */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="bg-slate-800/80 p-2.5 rounded-2xl border border-slate-700 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] text-slate-400 block font-medium">Temuan</span>
+                <p className="text-sm font-extrabold text-white mt-0.5">{totalItems}</p>
+              </div>
+              <div className="w-1.5 h-6 bg-slate-600 rounded-full" />
+            </div>
+
+            <div className="bg-blue-950/20 p-2.5 rounded-2xl border border-blue-900/40 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] text-blue-400 block font-medium">Menunggu</span>
+                <p className="text-sm font-extrabold text-blue-400 mt-0.5">
+                  {pendingClaims.length}{' '}
+                  <span className="text-[9px] text-blue-500/80 font-normal">
+                    ({claims.length > 0 ? Math.round((pendingClaims.length / claims.length) * 100) : 0}%)
+                  </span>
+                </p>
+              </div>
+              <div className="w-1.5 h-6 bg-blue-500 rounded-full" />
+            </div>
+
+            <div className="bg-emerald-950/20 p-2.5 rounded-2xl border border-emerald-900/40 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] text-emerald-400 block font-medium">Disetujui</span>
+                <p className="text-sm font-extrabold text-emerald-400 mt-0.5">
+                  {validClaims.length}{' '}
+                  <span className="text-[9px] text-emerald-500/80 font-normal">
+                    ({claims.length > 0 ? Math.round((validClaims.length / claims.length) * 100) : 0}%)
+                  </span>
+                </p>
+              </div>
+              <div className="w-1.5 h-6 bg-emerald-500 rounded-full" />
+            </div>
+
+            <div className="bg-rose-950/20 p-2.5 rounded-2xl border border-rose-900/40 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] text-rose-300 block font-medium">Ditolak</span>
+                <p className="text-sm font-extrabold text-rose-400 mt-0.5">
+                  {rejectedClaims.length}{' '}
+                  <span className="text-[9px] text-rose-500/80 font-normal">
+                    ({claims.length > 0 ? Math.round((rejectedClaims.length / claims.length) * 100) : 0}%)
+                  </span>
+                </p>
+              </div>
+              <div className="w-1.5 h-6 bg-rose-500 rounded-full" />
+            </div>
           </div>
         </div>
       </div>
@@ -271,9 +348,28 @@ export const SatpamDashboard: React.FC<SatpamDashboardProps> = ({
                   <h4 className="text-xs font-bold text-[#0F172A] truncate mt-1">{item.title}</h4>
                   <p className="text-[11px] text-[#64748B] truncate">Simpan: {item.storage_location}</p>
                 </div>
-                <button className="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200 shrink-0">
-                  Detail
-                </button>
+                <div className="flex flex-col gap-1.5 shrink-0">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectItem(item);
+                    }}
+                    className="text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-lg border border-amber-200 shrink-0 text-center"
+                  >
+                    Detail
+                  </button>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (confirm('Apakah Anda yakin ingin menghapus laporan barang ini secara permanen? Semua klaim terkait juga akan ikut dihapus.')) {
+                        onDeleteItem?.(item);
+                      }
+                    }}
+                    className="text-[10px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-lg border border-rose-200 shrink-0 text-center"
+                  >
+                    Hapus
+                  </button>
+                </div>
               </div>
             ))}
           </div>

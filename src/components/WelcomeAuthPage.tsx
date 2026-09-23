@@ -28,7 +28,7 @@ import { Profile, UserRole } from '../types';
 import { store } from '../services/store';
 import { MOCK_USERS } from '../data/mockData';
 import { getSupabase } from '../services/supabase';
-import { PWAInstallButton } from './PWAInstallButton';
+import welcomeIllustration from '../assets/images/welcome_search_illustration_1790164318567.jpg';
 
 export type WelcomeAuthViewMode = 'welcome' | 'login' | 'register';
 
@@ -340,42 +340,12 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                   </div>
 
                   {/* Vector Illustration */}
-                  <div className="flex-1 flex items-center justify-center pt-2">
-                    <svg viewBox="0 0 320 280" className="w-full h-auto max-h-[200px]" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="160" cy="140" r="105" fill="#F8FAFC" />
-                      <ellipse cx="160" cy="225" rx="70" ry="10" fill="#E2E8F0" />
-                      
-                      {/* Character Kneeling */}
-                      <path d="M115 185C102 185 92 196 90 206C88 216 102 222 118 222C134 222 150 216 157 201L165 185" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" fill="#CBD5E1" />
-                      <path d="M130 195L160 216C165 219 178 222 192 222C204 222 210 216 204 206C198 195 182 185 176 185" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" fill="#CBD5E1" />
-
-                      {/* Body */}
-                      <path d="M125 145C110 155 105 168 110 188C120 193 150 193 160 188C165 178 160 155 150 145Z" fill="#1E3E8F" stroke="#0F172A" strokeWidth="3" strokeLinejoin="round" />
-                      <path d="M100 185C85 162 85 132 105 120C120 110 125 130 115 145" stroke="#FBBF24" strokeWidth="3" strokeLinecap="round" strokeDasharray="4 4" fill="none" />
-
-                      {/* Arms */}
-                      <path d="M145 145C155 135 165 125 170 120L180 130" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" fill="#1E3E8F" />
-                      <path d="M120 155C110 145 100 140 90 142L85 155" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" fill="#1E3E8F" />
-                      
-                      {/* Hands */}
-                      <circle cx="182" cy="123" r="8" fill="#EF4444" stroke="#0F172A" strokeWidth="2.5" />
-                      <circle cx="83" cy="157" r="8" fill="#EF4444" stroke="#0F172A" strokeWidth="2.5" />
-
-                      {/* Head */}
-                      <circle cx="137" cy="118" r="16" fill="#FCA5A5" stroke="#0F172A" strokeWidth="3" />
-                      <path d="M121 118C121 102 137 98 149 106C153 114 153 122 149 126C143 128 129 128 121 118Z" fill="#0F172A" />
-
-                      {/* Magnifying Glass */}
-                      <circle cx="202" cy="113" r="18" stroke="#0F172A" strokeWidth="3" fill="#E0F2FE" />
-                      <line x1="190" x2="180" y1="123" y2="133" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
-                      <circle cx="207" cy="108" r="10" fill="#BAE6FD" opacity="0.6" />
-
-                      {/* Sparkles */}
-                      <path d="M80 80L83 87L90 90L83 93L80 100L77 93L70 90L77 87Z" fill="#0F172A" />
-                      <path d="M240 160L242 165L247 167L242 169L240 174L238 169L233 167L238 165Z" fill="#FBBF24" />
-                      <circle cx="225" cy="75" r="5" fill="#0F172A" />
-                      <circle cx="68" cy="125" r="6" fill="#0F172A" />
-                    </svg>
+                  <div className="flex-1 flex items-center justify-center pt-2 overflow-hidden rounded-2xl">
+                    <img 
+                      src={welcomeIllustration} 
+                      alt="Ilustrasi Cari Barang" 
+                      className="w-full h-auto max-h-[190px] object-contain object-center rounded-2xl hover:scale-105 transition-transform duration-300"
+                    />
                   </div>
 
                   {/* Onboarding Text Layout */}
@@ -391,15 +361,14 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                     </p>
                   </div>
 
-                  {/* "Let's start" Pill Button & PWA Mobile Install */}
-                  <div className="mt-5 space-y-2">
+                  {/* "Let's start" Pill Button */}
+                  <div className="mt-5">
                     <button
-                      onClick={() => setMode('login')}
-                      className="w-full h-11 bg-[#1E3E8F] hover:bg-blue-900 text-white font-bold text-xs rounded-full shadow-sm transition-all active:scale-[0.98]"
+                       onClick={() => setMode('login')}
+                       className="w-full h-11 bg-[#1E3E8F] hover:bg-blue-900 text-white font-bold text-xs rounded-full shadow-sm transition-all active:scale-[0.98]"
                     >
                       Let's start
                     </button>
-                    <PWAInstallButton variant="pill" className="w-full justify-center py-2.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200" />
                   </div>
                 </div>
 
@@ -418,10 +387,6 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                         <p className="text-[9px] text-slate-400 font-bold leading-none">HALO SISWA</p>
                         <h4 className="text-xs font-black text-slate-800 mt-0.5">Hi, Mahdi</h4>
                       </div>
-                    </div>
-                    
-                    <div className="w-8.5 h-8.5 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-700">
-                      <Send className="w-3.5 h-3.5 text-slate-600 rotate-45 -translate-x-0.5 translate-y-0.5" />
                     </div>
                   </div>
 
@@ -596,31 +561,6 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                       </button>
                     </form>
 
-                    {/* Quick Demo Login Widget */}
-                    <div className="mt-3.5 pt-3 pb-1 px-1 bg-blue-50/50 rounded-2xl border border-blue-100/50 space-y-2">
-                      <span className="block text-[9px] font-extrabold uppercase tracking-wider text-blue-800 text-center">
-                        ⚡ MASUK CEPAT AKUN DEMO
-                      </span>
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleQuickLogin('siswa')}
-                          className="h-10 bg-white hover:bg-slate-50 text-slate-800 text-[10px] font-bold rounded-xl border border-slate-200 transition-all flex flex-col items-center justify-center shadow-3xs"
-                        >
-                          <span className="text-[#1E3E8F]">Siswa (Damar)</span>
-                          <span className="text-[8px] text-slate-400 font-medium">Bisa lapor & klaim</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleQuickLogin('satpam')}
-                          className="h-10 bg-white hover:bg-slate-50 text-slate-800 text-[10px] font-bold rounded-xl border border-slate-200 transition-all flex flex-col items-center justify-center shadow-3xs"
-                        >
-                          <span className="text-amber-700">Satpam (Pak Joko)</span>
-                          <span className="text-[8px] text-slate-400 font-medium">Bisa verifikasi klaim</span>
-                        </button>
-                      </div>
-                    </div>
-
                     {/* Google Login with clean white frame */}
                     <div className="mt-2">
                       <button
@@ -774,21 +714,40 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                         </div>
                       </div>
 
-                      {/* Sandi */}
-                      <div>
-                        <label className="block text-[9px] font-bold text-slate-800 mb-0.5 uppercase tracking-wide">
-                          Kata Sandi
-                        </label>
-                        <div className="relative">
-                          <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
-                          <input
-                            type="password"
-                            required
-                            value={regPassword}
-                            onChange={(e) => setRegPassword(e.target.value)}
-                            placeholder="Min 6 karakter"
-                            className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] bg-slate-50"
-                          />
+                      {/* Sandi & Konfirmasi Sandi */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-[9px] font-bold text-slate-800 mb-0.5 uppercase tracking-wide">
+                            Kata Sandi
+                          </label>
+                          <div className="relative">
+                            <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2.5" />
+                            <input
+                              type="password"
+                              required
+                              value={regPassword}
+                              onChange={(e) => setRegPassword(e.target.value)}
+                              placeholder="Min 6 kar"
+                              className="w-full h-8 pl-6.5 pr-2 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] bg-slate-50"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[9px] font-bold text-slate-800 mb-0.5 uppercase tracking-wide">
+                            Konfirmasi Sandi
+                          </label>
+                          <div className="relative">
+                            <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2.5" />
+                            <input
+                              type="password"
+                              required
+                              value={regConfirmPassword}
+                              onChange={(e) => setRegConfirmPassword(e.target.value)}
+                              placeholder="Ketik ulang"
+                              className="w-full h-8 pl-6.5 pr-2 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] bg-slate-50"
+                            />
+                          </div>
                         </div>
                       </div>
 

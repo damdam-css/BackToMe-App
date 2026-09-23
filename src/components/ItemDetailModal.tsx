@@ -24,6 +24,8 @@ interface ItemDetailModalProps {
   currentUser: Profile;
   existingUserClaim?: Claim;
   allClaimsForItem: Claim[];
+  onEditItem?: (item: Item) => void;
+  onDeleteItem?: (item: Item) => void;
 }
 
 export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
@@ -35,6 +37,8 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   currentUser,
   existingUserClaim,
   allClaimsForItem,
+  onEditItem,
+  onDeleteItem,
 }) => {
   const [isImgLoaded, setIsImgLoaded] = React.useState(false);
 
@@ -131,6 +135,31 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
           </div>
 
           <div className="p-5 space-y-5">
+            {/* Moderator or Reporter Actions (Edit, Delete, Cancel Laporan) */}
+            {(isSecurity || item.reporter_id === currentUser.id) && (
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col gap-2.5 animate-in slide-in-from-top-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  {isSecurity ? '⚙️ Opsi Verifikator & Moderator' : '📝 Kelola Laporan Anda'}
+                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  {item.reporter_id === currentUser.id && (
+                    <button
+                      onClick={() => onEditItem?.(item)}
+                      className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-full text-xs transition-colors flex items-center gap-1.5 border border-blue-200 shadow-3xs"
+                    >
+                      Edit Laporan
+                    </button>
+                  )}
+                  <button
+                    onClick={() => onDeleteItem?.(item)}
+                    className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-full text-xs transition-colors flex items-center gap-1.5 border border-rose-200 shadow-3xs ml-auto"
+                  >
+                    {item.reporter_id === currentUser.id ? 'Batalkan Laporan' : 'Hapus Laporan'}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Judul + Metadata di Bawah Foto per Section 7e */}
             <div className="space-y-2">
               <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-tight">

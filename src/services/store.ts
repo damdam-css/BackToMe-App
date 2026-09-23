@@ -1,5 +1,6 @@
 import { Profile, Item, Claim, Message, UserRole, ItemStatus } from '../types';
 import { MOCK_USERS, INITIAL_ITEMS, INITIAL_CLAIMS, INITIAL_MESSAGES } from '../data/mockData';
+import { getSupabase } from './supabase';
 
 const STORAGE_KEYS = {
   CURRENT_USER: 'backtome_current_user_v2',
@@ -19,6 +20,10 @@ class BackToMeStore {
 
   constructor() {
     this.init();
+    // Non-blocking trigger cloud sync when initialized
+    this.syncWithCloud().catch(err => {
+      console.warn('Initial cloud sync warning:', err);
+    });
   }
 
   private init() {
@@ -88,6 +93,89 @@ class BackToMeStore {
     if (online) {
       // Trigger a sync re-fetch event
       this.emit('items-status', { type: 'SYNC', items: this.getItems() });
+      this.syncWithCloud().catch(() => {});
+    }
+  }
+
+  // Synchronize local storage with Supabase cloud database (Two-Way Sync)
+  public async syncWithCloud() {
+    const supabase = getSupabase();
+    if (!supabase || !this.isOnline) return;
+
+    try {
+      // 1. Fetch Items from Supabase
+      const { data: cloudItems, error: itemsError } = await supabase
+        .from('items')
+        .select('*');
+
+      if (!itemsError && cloudItems) {
+        // Merge cloud items with local ones
+        const localItems = this.getItems();
+        const mergedItems = [...localItems];
+
+        cloudItems.forEach((cItem: any) => {
+          const idx = mergedItems.findIndex((it) => it.id === cItem.id);
+          if (idx === -1) {
+            mergedItems.push(cItem);
+          } else {
+            // Take the one with the newer updated_at timestamp
+            const localTime = new Date(mergedItems[idx].updated_at || 0).getTime();
+            const cloudTime = new Date(cItem.updated_at || 0).getTime();
+            if (cloudTime > localTime) {
+              mergedItems[idx] = cItem;
+            }
+          }
+        });
+
+        localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(mergedItems));
+        this.emit('items-status', { type: 'SYNC', items: mergedItems });
+      }
+
+      // 2. Fetch Claims from Supabase
+      const { data: cloudClaims, error: claimsError } = await supabase
+        .from('claims')
+        .select('*');
+
+      if (!claimsError && cloudClaims) {
+        const localClaims = this.getClaims();
+        const mergedClaims = [...localClaims];
+
+        cloudClaims.forEach((cClaim: any) => {
+          const idx = mergedClaims.findIndex((cl) => cl.id === cClaim.id);
+          if (idx === -1) {
+            mergedClaims.push(cClaim);
+          } else {
+            const localTime = new Date(mergedClaims[idx].updated_at || 0).getTime();
+            const cloudTime = new Date(cClaim.updated_at || 0).getTime();
+            if (cloudTime > localTime) {
+              mergedClaims[idx] = cClaim;
+            }
+          }
+        });
+
+        localStorage.setItem(STORAGE_KEYS.CLAIMS, JSON.stringify(mergedClaims));
+        this.emit('claims-status', { type: 'SYNC', claims: mergedClaims });
+      }
+
+      // 3. Fetch Messages from Supabase
+      const { data: cloudMessages, error: messagesError } = await supabase
+        .from('messages')
+        .select('*');
+
+      if (!messagesError && cloudMessages) {
+        const localMessages = JSON.parse(localStorage.getItem(STORAGE_KEYS.MESSAGES) || '[]');
+        const mergedMessages = [...localMessages];
+
+        cloudMessages.forEach((cMsg: any) => {
+          if (!mergedMessages.some((m) => m.id === cMsg.id)) {
+            mergedMessages.push(cMsg);
+          }
+        });
+
+        localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(mergedMessages));
+      }
+    } catch (e) {
+      console.warn('Supabase Cloud Sync inactive or tables not set up yet:', e);
     }
   }
 
@@ -211,6 +299,15 @@ class BackToMeStore {
     items.unshift(newItem);
     localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(items));
     this.emit('items-status', { type: 'INSERT', item: newItem });
+
+    // Background cloud save
+    const supabase = getSupabase();
+    if (supabase && this.isOnline) {
+      supabase.from('items').upsert(newItem).then(({ error }: { error: any }) => {
+        if (error) console.warn('Gagal sync item baru ke Supabase:', error);
+      });
+    }
+
     return newItem;
   }
 
@@ -228,7 +325,66 @@ class BackToMeStore {
 
     localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(items));
     this.emit('items-status', { type: 'UPDATE', item: items[idx] });
+
+    // Background cloud save
+    const supabase = getSupabase();
+    if (supabase && this.isOnline) {
+      supabase.from('items').upsert(items[idx]).then(({ error }: { error: any }) => {
+        if (error) console.warn('Gagal sync status item ke Supabase:', error);
+      });
+    }
+
     return items[idx];
+  }
+
+  public updateItem(itemId: string, data: Partial<Item>): Item {
+    const items = this.getItems();
+    const idx = items.findIndex((it) => it.id === itemId);
+    if (idx === -1) throw new Error('Barang tidak ditemukan');
+
+    items[idx] = {
+      ...items[idx],
+      ...data,
+      updated_at: new Date().toISOString(),
+    };
+
+    localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(items));
+    this.emit('items-status', { type: 'UPDATE', item: items[idx] });
+
+    // Background cloud save
+    const supabase = getSupabase();
+    if (supabase && this.isOnline) {
+      supabase.from('items').upsert(items[idx]).then(({ error }: { error: any }) => {
+        if (error) console.warn('Gagal sync update item ke Supabase:', error);
+      });
+    }
+
+    return items[idx];
+  }
+
+  public deleteItem(itemId: string) {
+    const items = this.getItems();
+    const filtered = items.filter((it) => it.id !== itemId);
+    localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(filtered));
+
+    // Also delete any associated claims
+    const claims = this.getClaims();
+    const claimsFiltered = claims.filter((c) => c.item_id !== itemId);
+    localStorage.setItem(STORAGE_KEYS.CLAIMS, JSON.stringify(claimsFiltered));
+
+    this.emit('items-status', { type: 'RESET', items: filtered });
+    this.emit('claims-status', { type: 'RESET', claims: claimsFiltered });
+
+    // Background cloud delete
+    const supabase = getSupabase();
+    if (supabase && this.isOnline) {
+      supabase.from('items').delete().eq('id', itemId).then(({ error }: { error: any }) => {
+        if (error) console.warn('Gagal sync delete item dari Supabase:', error);
+      });
+      supabase.from('claims').delete().eq('item_id', itemId).then(({ error }: { error: any }) => {
+        if (error) console.warn('Gagal sync delete claims dari Supabase:', error);
+      });
+    }
   }
 
   // --- Claims (Klaim Kepemilikan) ---
@@ -291,6 +447,15 @@ class BackToMeStore {
     );
 
     this.emit('claims-status', { type: 'INSERT', claim: newClaim });
+
+    // Background cloud save
+    const supabase = getSupabase();
+    if (supabase && this.isOnline) {
+      supabase.from('claims').upsert(newClaim).then(({ error }: { error: any }) => {
+        if (error) console.warn('Gagal sync claim baru ke Supabase:', error);
+      });
+    }
+
     return newClaim;
   }
 
@@ -390,6 +555,20 @@ class BackToMeStore {
     this.emit('items-status', { type: 'UPDATE', item });
     this.emit(`chat-${claimId}`, { type: 'VERIFICATION_UPDATE', claim: targetClaim });
 
+    // Background cloud save
+    const supabase = getSupabase();
+    if (supabase && this.isOnline) {
+      // Save targets
+      supabase.from('claims').upsert(targetClaim).then();
+      supabase.from('items').upsert(item).then();
+      // Auto rejections
+      claims.forEach((c) => {
+        if (c.item_id === itemId && c.id !== claimId && c.status === 'ditolak') {
+          supabase.from('claims').upsert(c).then();
+        }
+      });
+    }
+
     return { claim: targetClaim, item };
   }
 
@@ -432,6 +611,15 @@ class BackToMeStore {
 
     // Realtime broadcast (TC-12)
     this.emit(`chat-${claimId}`, newMsg);
+
+    // Background cloud save
+    const supabase = getSupabase();
+    if (supabase && this.isOnline) {
+      supabase.from('messages').upsert(newMsg).then(({ error }: { error: any }) => {
+        if (error) console.warn('Gagal sync message ke Supabase:', error);
+      });
+    }
+
     return newMsg;
   }
 
