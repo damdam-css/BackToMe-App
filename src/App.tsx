@@ -514,7 +514,7 @@ export default function App() {
                   <div className="md:col-span-5 h-44 md:h-full relative overflow-hidden bg-blue-700 flex items-center justify-center">
                     <img
                       src={ASSET_IMAGES.heroBanner}
-                      alt="Lost and Found Campus Hub"
+                      alt="Lost and Found School Hub"
                       className="w-full h-full object-cover opacity-95 hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />

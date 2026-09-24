@@ -198,7 +198,7 @@ export const ChatRoomModal: React.FC<ChatRoomModalProps> = ({
                 Kontak Pelapor Temuan
               </span>
               <span className="text-[9px] bg-blue-50 text-blue-800 font-bold px-2 py-0.5 rounded-full border border-blue-200">
-                Terverifikasi Kampus
+                Terverifikasi Sekolah
               </span>
             </div>
 
@@ -334,9 +334,9 @@ export const ChatRoomModal: React.FC<ChatRoomModalProps> = ({
           <div className="p-4 bg-amber-50/40 rounded-2xl border border-amber-200 text-[11px] text-amber-900 flex items-start gap-2.5">
             <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold block text-amber-950">SOP Pengambilan Barang Kampus</span>
+              <span className="font-bold block text-amber-950">SOP Pengambilan Barang Temuan Sekolah</span>
               <p className="text-amber-800 mt-0.5 leading-relaxed font-medium">
-                Hindari serah terima barang di tempat sepi atau tanpa saksi. Selalu sepakati pertemuan di <strong>{item.storage_location}</strong> didampingi petugas keamanan sekolah/kampus.
+                Hindari serah terima barang di tempat sepi atau tanpa saksi. Selalu sepakati pertemuan di <strong>{item.storage_location}</strong> didampingi petugas keamanan sekolah.
               </p>
             </div>
           </div>

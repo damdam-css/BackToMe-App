@@ -16,7 +16,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [role, setRole] = useState<UserRole>('siswa');
-  const [institution, setInstitution] = useState('SMA / Universitas Kampus Utama');
+  const [institution, setInstitution] = useState('SMKN 24 Jakarta');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -119,7 +119,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           full_name: email.split('@')[0].toUpperCase(),
           role: 'siswa',
           email: email.trim(),
-          institution: 'Kampus Utama',
+          institution: 'SMKN 24 Jakarta',
           created_at: new Date().toISOString(),
         };
         setPendingUser(newUser);
@@ -186,16 +186,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         </div>
 
         {/* Header Logo & Tagline (top, center per Section 7a) */}
-        <div className="bg-[#0EA5E9] text-white p-5 text-center relative shrink-0">
+        <div className="bg-[#2563EB] text-white p-5 text-center relative shrink-0">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#0284C7] flex items-center justify-center text-slate-300 hover:text-white"
+            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#1D4ED8] flex items-center justify-center text-slate-300 hover:text-white"
             aria-label="Tutup"
           >
             <X className="w-4 h-4" />
           </button>
 
-          <div className="w-12 h-12 rounded-xl bg-[#FFC570] flex items-center justify-center text-[#0284C7] shadow-md font-bold text-xl mx-auto mb-2">
+          <div className="w-12 h-12 rounded-xl bg-[#FFC570] flex items-center justify-center text-[#1D4ED8] shadow-md font-bold text-xl mx-auto mb-2">
             B
           </div>
           <h2 className="text-lg font-bold">BackToMe</h2>
@@ -210,7 +210,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               <p className="font-bold text-xs">Informasi Sandbox AI Studio & Supabase:</p>
               <p className="text-[11px]">Masukkan kode verifikasi berikut untuk mengaktifkan akun Anda secara instan:</p>
               <div className="text-center py-1">
-                <span className="font-extrabold text-[#0284C7] text-sm bg-white px-3 py-1 rounded border border-amber-300 select-all tracking-wider">{generatedCode}</span>
+                <span className="font-extrabold text-[#1D4ED8] text-sm bg-white px-3 py-1 rounded border border-amber-300 select-all tracking-wider">{generatedCode}</span>
               </div>
             </div>
 
@@ -226,13 +226,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   value={verificationCodeInput}
                   onChange={(e) => setVerificationCodeInput(e.target.value.replace(/\D/g, ''))}
                   placeholder="Contoh: 123456"
-                  className="w-full h-12 text-center text-xl font-bold tracking-[0.5em] rounded-xl border border-[#CBD5E1] focus:outline-none focus:border-[#0EA5E9] focus:ring-2 focus:ring-[#FFC570] bg-white"
+                  className="w-full h-12 text-center text-xl font-bold tracking-[0.5em] rounded-xl border border-[#CBD5E1] focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#FFC570] bg-white"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full h-12 bg-[#FFC570] hover:bg-[#F5B050] text-[#0284C7] font-bold rounded-xl text-xs sm:text-sm shadow-xs transition-all animate-none"
+                className="w-full h-12 bg-[#FFC570] hover:bg-[#F5B050] text-[#1D4ED8] font-bold rounded-xl text-xs sm:text-sm shadow-xs transition-all animate-none"
               >
                 Verifikasi & Masuk
               </button>
@@ -257,7 +257,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 onClick={() => setTab('login')}
                 className={`flex-1 py-3 text-xs font-semibold transition-colors ${
                   tab === 'login'
-                    ? 'text-[#0F172A] border-b-2 border-[#0EA5E9] bg-white'
+                    ? 'text-[#0F172A] border-b-2 border-[#2563EB] bg-white'
                     : 'text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
@@ -267,7 +267,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 onClick={() => setTab('register')}
                 className={`flex-1 py-3 text-xs font-semibold transition-colors ${
                   tab === 'register'
-                    ? 'text-[#0F172A] border-b-2 border-[#0EA5E9] bg-white'
+                    ? 'text-[#0F172A] border-b-2 border-[#2563EB] bg-white'
                     : 'text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
@@ -295,23 +295,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         placeholder="Contoh: Damar Areefa Naraya"
-                        className="w-full h-12 pl-9 pr-3.5 rounded-lg border border-[#CBD5E1] text-xs focus:outline-none focus:border-[#0EA5E9] focus:ring-2 focus:ring-[#FFC570]"
+                        className="w-full h-12 pl-9 pr-3.5 rounded-lg border border-[#CBD5E1] text-xs focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#FFC570]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-[#0F172A] mb-1">Peran di Kampus</label>
+                    <label className="block text-xs font-bold text-[#0F172A] mb-1">Peran di Sekolah</label>
                     <select
                       value={role}
                       onChange={(e) => setRole(e.target.value as UserRole)}
-                      className="w-full h-12 px-3 rounded-lg border border-[#CBD5E1] text-xs focus:outline-none focus:border-[#0EA5E9] focus:ring-2 focus:ring-[#FFC570] bg-white"
+                      className="w-full h-12 px-3 rounded-lg border border-[#CBD5E1] text-xs focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#FFC570] bg-white"
                     >
-                      <option value="siswa">Siswa / Mahasiswa</option>
-                      <option value="guru">Guru / Dosen</option>
-                      <option value="staff">Staf Kampus</option>
-                      <option value="satpam">Satpam (Verifikator Fisik)</option>
-                      <option value="admin">Admin Pusat</option>
+                      <option value="siswa">Siswa</option>
+                      <option value="guru">Guru</option>
                     </select>
                   </div>
                 </>
@@ -327,7 +324,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="nama@sekolah.sch.id"
-                    className="w-full h-12 pl-9 pr-3.5 rounded-lg border border-[#CBD5E1] text-xs focus:outline-none focus:border-[#0EA5E9] focus:ring-2 focus:ring-[#FFC570]"
+                    className="w-full h-12 pl-9 pr-3.5 rounded-lg border border-[#CBD5E1] text-xs focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#FFC570]"
                   />
                 </div>
               </div>
@@ -351,7 +348,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Minimal 6 karakter"
-                    className="w-full h-12 pl-9 pr-3.5 rounded-lg border border-[#CBD5E1] text-xs focus:outline-none focus:border-[#0EA5E9] focus:ring-2 focus:ring-[#FFC570]"
+                    className="w-full h-12 pl-9 pr-3.5 rounded-lg border border-[#CBD5E1] text-xs focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#FFC570]"
                   />
                 </div>
               </div>
@@ -359,7 +356,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               {/* Tombol Primary "Masuk"/"Daftar" full-width per Section 7a */}
               <button
                 type="submit"
-                className="w-full h-12 bg-[#FFC570] hover:bg-[#F5B050] text-[#0284C7] font-bold rounded-xl text-xs sm:text-sm shadow-xs transition-all active:scale-[0.98]"
+                className="w-full h-12 bg-[#FFC570] hover:bg-[#F5B050] text-[#1D4ED8] font-bold rounded-xl text-xs sm:text-sm shadow-xs transition-all active:scale-[0.98]"
               >
                 {tab === 'login' ? 'Masuk' : 'Daftar'}
               </button>
@@ -376,7 +373,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                       onClick={() => handleQuickLogin('siswa')}
                       className="h-10 bg-white hover:bg-slate-50 text-slate-800 text-[10px] font-bold rounded-xl border border-slate-200 transition-all flex flex-col items-center justify-center shadow-3xs"
                     >
-                      <span className="text-[#0EA5E9]">Siswa (Damar)</span>
+                      <span className="text-[#2563EB]">Siswa (Damar)</span>
                       <span className="text-[8px] text-slate-400 font-medium">Bisa lapor & klaim</span>
                     </button>
                     <button
@@ -405,7 +402,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               <button
                 type="button"
                 onClick={handleGoogleAuth}
-                className="w-full h-12 bg-white border-1.5 border-[#0EA5E9] text-[#0284C7] hover:bg-slate-50 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 transition-colors"
+                className="w-full h-12 bg-white border-1.5 border-[#2563EB] text-[#1D4ED8] hover:bg-slate-50 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 transition-colors"
               >
                 <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>

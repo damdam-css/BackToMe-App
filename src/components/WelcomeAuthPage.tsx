@@ -365,7 +365,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                   <div className="mt-5">
                     <button
                        onClick={() => setMode('login')}
-                       className="w-full h-11 bg-[#1E3E8F] hover:bg-blue-900 text-white font-bold text-xs rounded-full shadow-sm transition-all active:scale-[0.98]"
+                       className="w-full h-11 bg-[#2563EB] hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow-sm transition-all active:scale-[0.98]"
                     >
                       Let's start
                     </button>
@@ -380,7 +380,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                   {/* Avatar Greeting Bar */}
                   <div className="flex items-center justify-between pt-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-9 h-9 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-xs">
+                      <div className="w-9 h-9 rounded-full bg-[#2563EB] flex items-center justify-center text-white font-bold text-xs">
                         M
                       </div>
                       <div className="text-left">
@@ -412,7 +412,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                         <span className="text-[9px] font-bold text-slate-700">Elektronik</span>
                       </div>
                       <div className="bg-white border border-slate-200 rounded-xl p-2.5 flex flex-col items-center justify-center gap-1">
-                        <div className="w-7 h-7 rounded-full bg-[#1E3E8F] flex items-center justify-center">
+                        <div className="w-7 h-7 rounded-full bg-[#2563EB] flex items-center justify-center">
                           <FileText className="w-3.5 h-3.5 text-white" />
                         </div>
                         <span className="text-[9px] font-bold text-slate-700">Dokumen</span>
@@ -423,7 +423,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                   {/* Royal Blue Featured item card */}
                   <div className="mt-3 text-left flex-1 flex flex-col justify-end mb-3">
                     <h4 className="text-[10px] font-bold text-slate-800 tracking-wider mb-2">Terbaru untuk Anda</h4>
-                    <div className="bg-[#1E3E8F] text-white p-3.5 rounded-2xl flex flex-col justify-between h-[115px] shadow-sm relative overflow-hidden">
+                    <div className="bg-[#2563EB] text-white p-3.5 rounded-2xl flex flex-col justify-between h-[115px] shadow-sm relative overflow-hidden">
                       <div>
                         <div className="flex items-center justify-between">
                           <span className="text-[9px] bg-white/20 px-1.5 py-0.5 rounded font-bold">Kunci Motor</span>
@@ -444,13 +444,13 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                     <div className="flex gap-2">
                       <button
                         onClick={() => setMode('login')}
-                        className="flex-1 h-8 bg-white hover:bg-slate-50 border border-slate-200 text-[#1E3E8F] font-bold text-[9px] rounded-lg transition-colors"
+                        className="flex-1 h-8 bg-white hover:bg-slate-50 border border-slate-200 text-[#2563EB] font-bold text-[9px] rounded-lg transition-colors"
                       >
                         Masuk
                       </button>
                       <button
                         onClick={() => setMode('register')}
-                        className="flex-1 h-8 bg-[#1E3E8F] hover:bg-blue-900 text-white font-bold text-[9px] rounded-lg transition-colors"
+                        className="flex-1 h-8 bg-[#2563EB] hover:bg-blue-700 text-white font-bold text-[9px] rounded-lg transition-colors"
                       >
                         Daftar Baru
                       </button>
@@ -465,7 +465,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
 
                   {/* Bottom Navigation Mockup */}
                   <div className="border-t border-slate-100 bg-white -mx-5 -mb-5 px-5 py-2 flex items-center justify-between">
-                    <div className="p-1 rounded-full bg-blue-50 text-[#1E3E8F]">
+                    <div className="p-1 rounded-full bg-blue-50 text-[#2563EB]">
                       <Compass className="w-3.5 h-3.5" />
                     </div>
                     <div className="p-1 text-slate-300">
@@ -495,7 +495,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                   <div>
                     {/* Small clean logo header */}
                     <div className="text-center mt-3 mb-4">
-                      <div className="w-9 h-9 rounded-full bg-[#1E3E8F] text-white font-black text-base flex items-center justify-center mx-auto mb-1.5">
+                      <div className="w-9 h-9 rounded-full bg-[#2563EB] text-white font-black text-base flex items-center justify-center mx-auto mb-1.5">
                         B
                       </div>
                       <h2 className="text-base font-black text-slate-900 tracking-tight">Masuk ke BackToMe</h2>
@@ -523,7 +523,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                             value={loginEmail}
                             onChange={(e) => setLoginEmail(e.target.value)}
                             placeholder="nama@smkn24jakarta.sch.id"
-                            className="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] focus:ring-1 focus:ring-[#1E3E8F] bg-slate-50 font-medium"
+                            className="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 text-[10px] focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] bg-slate-50 font-medium"
                           />
                         </div>
                       </div>
@@ -547,7 +547,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                             value={loginPassword}
                             onChange={(e) => setLoginPassword(e.target.value)}
                             placeholder="Masukkan kata sandi"
-                            className="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] focus:ring-1 focus:ring-[#1E3E8F] bg-slate-50 font-medium"
+                            className="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 text-[10px] focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] bg-slate-50 font-medium"
                           />
                         </div>
                       </div>
@@ -555,7 +555,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                       {/* Submit Button - solid blue rounded-full */}
                       <button
                         type="submit"
-                        className="w-full h-10 bg-[#1E3E8F] hover:bg-blue-900 text-white font-bold text-xs rounded-full shadow-sm transition-colors mt-2 active:scale-98"
+                        className="w-full h-10 bg-[#2563EB] hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow-sm transition-colors mt-2 active:scale-98"
                       >
                         Masuk Sekarang
                       </button>
@@ -586,7 +586,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                       <button
                         type="button"
                         onClick={() => setMode('register')}
-                        className="font-bold text-[#1E3E8F] hover:underline"
+                        className="font-bold text-[#2563EB] hover:underline"
                       >
                         Daftar Baru
                       </button>
@@ -642,7 +642,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                             value={regFullName}
                             onChange={(e) => setRegFullName(e.target.value)}
                             placeholder="Nama sesuai kartu pelajar"
-                            className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] bg-slate-50"
+                            className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#2563EB] bg-slate-50"
                           />
                         </div>
                       </div>
@@ -660,7 +660,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                             value={regEmail}
                             onChange={(e) => setRegEmail(e.target.value)}
                             placeholder="nama@smkn24jakarta.sch.id"
-                            className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] bg-slate-50"
+                            className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#2563EB] bg-slate-50"
                           />
                         </div>
                       </div>
@@ -678,7 +678,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                             value={regPhone}
                             onChange={(e) => setRegPhone(e.target.value)}
                             placeholder="Contoh: 0812345678"
-                            className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] bg-slate-50"
+                            className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#2563EB] bg-slate-50"
                           />
                         </div>
                       </div>
@@ -692,12 +692,10 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                           <select
                             value={regRole}
                             onChange={(e) => setRegRole(e.target.value as UserRole)}
-                            className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] bg-slate-50 font-bold text-slate-700"
+                            className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#2563EB] bg-slate-50 font-bold text-slate-700"
                           >
                             <option value="siswa">Siswa</option>
                             <option value="guru">Guru</option>
-                            <option value="staff">Staf</option>
-                            <option value="satpam">Satpam</option>
                           </select>
                         </div>
 
@@ -715,20 +713,20 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                       </div>
 
                       {/* Sandi & Konfirmasi Sandi */}
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-2.5">
                         <div>
                           <label className="block text-[9px] font-bold text-slate-800 mb-0.5 uppercase tracking-wide">
                             Kata Sandi
                           </label>
                           <div className="relative">
-                            <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2.5" />
+                            <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
                             <input
                               type="password"
                               required
                               value={regPassword}
                               onChange={(e) => setRegPassword(e.target.value)}
-                              placeholder="Min 6 kar"
-                              className="w-full h-8 pl-6.5 pr-2 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] bg-slate-50"
+                              placeholder="Minimal 6 karakter"
+                              className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#2563EB] bg-slate-50"
                             />
                           </div>
                         </div>
@@ -738,14 +736,14 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                             Konfirmasi Sandi
                           </label>
                           <div className="relative">
-                            <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2.5" />
+                            <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
                             <input
                               type="password"
                               required
                               value={regConfirmPassword}
                               onChange={(e) => setRegConfirmPassword(e.target.value)}
-                              placeholder="Ketik ulang"
-                              className="w-full h-8 pl-6.5 pr-2 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#1E3E8F] bg-slate-50"
+                              placeholder="Ketik ulang kata sandi"
+                              className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 text-[10px] focus:outline-none focus:border-[#2563EB] bg-slate-50"
                             />
                           </div>
                         </div>
@@ -758,7 +756,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                             type="checkbox"
                             checked={regAgreed}
                             onChange={(e) => setRegAgreed(e.target.checked)}
-                            className="mt-0.5 w-3.5 h-3.5 rounded border-slate-300 text-[#1E3E8F] focus:ring-[#1E3E8F]"
+                            className="mt-0.5 w-3.5 h-3.5 rounded border-slate-300 text-[#2563EB] focus:ring-[#2563EB]"
                           />
                           <span className="text-[8px] text-slate-400 font-bold leading-normal">
                             Saya bersedia menaati prosedur klaim barang di Pos Satpam SMKN 24 Jakarta.
@@ -768,7 +766,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
 
                       <button
                         type="submit"
-                        className="w-full h-9 bg-[#1E3E8F] hover:bg-blue-900 text-white font-bold text-[11px] rounded-full shadow-sm transition-colors active:scale-98"
+                        className="w-full h-9 bg-[#2563EB] hover:bg-blue-700 text-white font-bold text-[11px] rounded-full shadow-sm transition-colors active:scale-98"
                       >
                         Daftar Akun
                       </button>
@@ -782,7 +780,7 @@ export const WelcomeAuthPage: React.FC<WelcomeAuthPageProps> = ({
                       <button
                         type="button"
                         onClick={() => setMode('login')}
-                        className="font-bold text-[#1E3E8F] hover:underline"
+                        className="font-bold text-[#2563EB] hover:underline"
                       >
                         Masuk
                       </button>

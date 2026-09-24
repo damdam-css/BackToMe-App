@@ -65,11 +65,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       case 'satpam':
         return 'Petugas Satpam (Verifikator)';
       case 'admin':
-        return 'Administrator Kampus';
+        return 'Administrator Sekolah';
       case 'guru':
         return 'Guru / Tenaga Pendidik';
       default:
-        return 'Siswa / Mahasiswa';
+        return 'Siswa';
     }
   };
 
@@ -260,7 +260,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   Panduan Alur & Panduan Awal
                 </span>
                 <span className="text-[11px] text-slate-500 font-medium">
-                  Informasi SOP kampus, keamanan, dan petunjuk sistem
+                  Informasi SOP sekolah, keamanan, dan petunjuk sistem
                 </span>
               </div>
             </div>
